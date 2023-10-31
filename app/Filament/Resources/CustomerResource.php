@@ -47,8 +47,11 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('first_name')
                     ->label('Name')
                     ->formatStateUsing(function ($record) {
-                        return $record->first_name . ' ' . $record->last_name;
+                        $tagsList = view('customer.tagsList', ['tags' => $record->tags])->render();
+
+                        return $record->first_name . ' ' . $record->last_name . ' ' . $tagsList;
                     })
+                    ->html()
                     ->searchable(['first_name', 'last_name']),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
