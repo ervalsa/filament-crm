@@ -27,22 +27,27 @@ class ListCustomers extends ListRecords
         $tabs['all'] = Tab::make('All Customers')
             ->badge(Customer::count());
         
-            $pipelineStages = PipelineStage::orderBy('position')->withCount('customers')->get();
+        if (!auth()->user()->isAdmin()) {
+            $tabs['my'] = Tab::make('My Customers')
+                ->badge(Customer::where('employee_id', auth()->id())->count());
+        }
 
-            foreach ($pipelineStages as $pipelineStage) {
-                $tabs[str($pipelineStage->name)->slug()->toString()] = Tab::make($pipelineStage->name)
-                    ->badge($pipelineStage->customers_count)
-                    ->modifyQueryUsing(function ($query) use ($pipelineStage) {
-                        return $query->where('pipeline_stage_id', $pipelineStage->id);
-                    });
-            }
+        $pipelineStages = PipelineStage::orderBy('position')->withCount('customers')->get();
 
-            $tabs['archived'] = Tab::make('Archived')
-                ->badge(Customer::onlyTrashed()->count())
-                ->modifyQueryUsing(function ($query) {
-                    return $query->onlyTrashed();
+        foreach ($pipelineStages as $pipelineStage) {
+            $tabs[str($pipelineStage->name)->slug()->toString()] = Tab::make($pipelineStage->name)
+                ->badge($pipelineStage->customers_count)
+                ->modifyQueryUsing(function ($query) use ($pipelineStage) {
+                    return $query->where('pipeline_stage_id', $pipelineStage->id);
                 });
+        }
 
-            return $tabs;
+        $tabs['archived'] = Tab::make('Archived')
+            ->badge(Customer::onlyTrashed()->count())
+            ->modifyQueryUsing(function ($query) {
+                return $query->onlyTrashed();
+            });
+
+        return $tabs;
     }
 }
