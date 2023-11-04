@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AcceptInvitation;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,6 +13,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::middleware('signed')
+    ->get('invitation/{invitation}/accept', AcceptInvitation::class)
+    ->name('invitation.accept');
 
 Route::get('/', function () {
     return view('welcome');
