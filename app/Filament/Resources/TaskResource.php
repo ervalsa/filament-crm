@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\TaskResource\Pages;
 use App\Filament\Resources\TaskResource\RelationManagers;
+use App\Models\Customer;
 use App\Models\Task;
 use Filament\Forms;
 use Filament\Forms\Form;
