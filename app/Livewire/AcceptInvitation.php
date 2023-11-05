@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\Invitation;
 use App\Models\Role;
 use App\Models\User;
-use Faker\Provider\ar_EG\Text;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -15,7 +14,6 @@ use Filament\Pages\Dashboard;
 use Filament\Pages\SimplePage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use Livewire\Component;
 
 class AcceptInvitation extends SimplePage
 {
