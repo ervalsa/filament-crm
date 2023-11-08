@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\QuoteResource\Pages;
-use App\Filament\Resources\QuoteResource\RelationManagers;
 use App\Models\Customer;
 use App\Models\Product;
 use App\Models\Quote;
@@ -13,11 +12,11 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Infolists\Components\ViewEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class QuoteResource extends Resource
 {
@@ -174,7 +173,10 @@ class QuoteResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->recordUrl(function ($record) {
+                return Pages\ViewQuote::getUrl([$record]);
+            });
     }
 
     public static function getRelations(): array
@@ -184,11 +186,25 @@ class QuoteResource extends Resource
         ];
     }
 
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                ViewEntry::make('invoice')
+                    ->columnSpanFull()
+                    ->viewData([
+                        'record' => $infolist->record
+                    ])
+                    ->view('infolists.components.quote-invoice-view')
+            ]);
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListQuotes::route('/'),
             'create' => Pages\CreateQuote::route('/create'),
+            'view' => Pages\ViewQuote::route('/{record}'),
             'edit' => Pages\EditQuote::route('/{record}/edit'),
         ];
     }
